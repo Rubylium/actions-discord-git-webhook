@@ -25,17 +25,13 @@ module.exports.send = (
   core.info("Constructing Embed...");
 
   let latest = commits[0];
-  const count = size == 1 ? "Commit" : " Commits";
+  const count = size == 1 ? "Update" : " Updates";
 
   let embed = new discord.MessageEmbed()
     .setColor(color)
     .setTitle(`⚡ ${size} ${count}\n📁\`${repository}\`\n🌳 \`${branch}\``)
     .setDescription(this.getChangeLog(payload, hideLinks, censorUsername))
     .setTimestamp(Date.parse(latest.timestamp));
-
-  if (!hideLinks) {
-    embed.setURL(url);
-  }
 
   return new Promise((resolve, reject) => {
     let client;
@@ -67,18 +63,9 @@ module.exports.getChangeLog = (payload, hideLinks, censorUsername) => {
   let changelog = "";
 
   for (let i in commits) {
-    if (i > 3) {
-      changelog += `+ ${commits.length - i} more...\n`;
-      break;
-    }
 
     let commit = commits[i];
-    const firstUsername = commit.author.username[0];
-    const lastUsername =
-      commit.author.username[commit.author.username.length - 1];
-    const username = censorUsername
-      ? `${firstUsername}...${lastUsername}`
-      : commit.author.username;
+    const username = commit.author.username;
     const repository = payload.repository;
 
     if (commit.message.includes(repository.full_name) && hideLinks) {
@@ -89,13 +76,7 @@ module.exports.getChangeLog = (payload, hideLinks, censorUsername) => {
     }
 
     let sha = commit.id.substring(0, 6);
-    let message =
-      commit.message.length > MAX_MESSAGE_LENGTH
-        ? commit.message.substring(0, MAX_MESSAGE_LENGTH) + "..."
-        : commit.message;
-    changelog += !hideLinks
-      ? `[\`${sha}\`](${commit.url}) ${message} by _@${username}_\n`
-      : `\`${sha}\` ${message}  by _@${username}_\n`;
+    changelog += `\`${sha}\` by _@${username}_\n`;
   }
 
   return changelog;

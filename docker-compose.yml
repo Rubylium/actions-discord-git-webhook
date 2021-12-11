@@ -3,7 +3,7 @@ version: '3.8'
 services:
 
   workspace:
-    image: johnnyhuy/actions-discord-git-webhook/workspace:latest
+    image: Rubylium/actions-discord-git-webhook/workspace:latest
     entrypoint: /bin/sh
     build:
       context: .
@@ -12,7 +12,7 @@ services:
       - ".:/opt/workspace"
 
   release:
-    image: johnnyhuy/actions-discord-git-webhook/release:latest
+    image: Rubylium/actions-discord-git-webhook/release:latest
     build:
       context: .
       dockerfile: release.Dockerfile
@@ -23,7 +23,7 @@ services:
       - CONVENTIONAL_GITHUB_RELEASER_TOKEN
 
   action:
-    image: johnnyhuy/actions-discord-git-webhook/action:latest
+    image: Rubylium/actions-discord-git-webhook/action:latest
     build:
       context: .
       dockerfile: action.Dockerfile
